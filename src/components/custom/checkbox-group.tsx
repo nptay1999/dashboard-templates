@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { cn } from "@/lib/utils";
-import createContext, { type TProviderProps } from "./create-context";
+import { cn } from '@/lib/utils'
+import createContext, { type TProviderProps } from './create-context'
 import {
   useCallback,
   useMemo,
@@ -8,33 +8,33 @@ import {
   type Dispatch,
   type ReactNode,
   type SetStateAction,
-} from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { Checkbox } from "@/components/ui/checkbox";
-import type { CheckedState } from "@radix-ui/react-checkbox";
-import { useControllableState } from "@/hooks/use-controllable-state";
+} from 'react'
+import { Slot } from '@radix-ui/react-slot'
+import { Checkbox } from '@/components/ui/checkbox'
+import type { CheckedState } from '@radix-ui/react-checkbox'
+import { useControllableState } from '@/hooks/use-controllable-state'
 
-const CHECKBOX_GROUP_NAME = "CheckboxGroup";
+const CHECKBOX_GROUP_NAME = 'CheckboxGroup'
 
-type TCheckboxValue = string | number | symbol;
+type TCheckboxValue = string | number | symbol
 
 type TCheckboxGroupContext<TValue = TCheckboxValue> = {
-  selectedValues: TValue[];
-  setSelectedValues: Dispatch<SetStateAction<TValue[]>>;
-};
+  selectedValues: TValue[]
+  setSelectedValues: Dispatch<SetStateAction<TValue[]>>
+}
 
 const [Provider, useCheckboxGroupContext] =
-  createContext<TCheckboxGroupContext<any>>(CHECKBOX_GROUP_NAME);
+  createContext<TCheckboxGroupContext<any>>(CHECKBOX_GROUP_NAME)
 
 type TCheckboxGroupProviderProps<TValue = TCheckboxValue> = Partial<
   TProviderProps<TCheckboxGroupContext<TValue>>
 > & {
-  children: ReactNode;
+  children: ReactNode
 
-  value?: TValue[];
-  defaultValue?: TValue[];
-  onChange?: (value: TValue[]) => void;
-};
+  value?: TValue[]
+  defaultValue?: TValue[]
+  onChange?: (value: TValue[]) => void
+}
 
 function CheckboxGroupProvider<TValue = TCheckboxValue>({
   value,
@@ -46,25 +46,18 @@ function CheckboxGroupProvider<TValue = TCheckboxValue>({
     prop: value,
     defaultProp: defaultValue ?? [],
     onChange: onChange,
-  });
+  })
 
   return (
-    <Provider
-      selectedValues={selectedValues}
-      setSelectedValues={setSelectedValues}
-      {...props}
-    />
-  );
+    <Provider selectedValues={selectedValues} setSelectedValues={setSelectedValues} {...props} />
+  )
 }
 
-type TCheckboxGroupProps<TValue = TCheckboxValue> = Omit<
-  ComponentProps<"div">,
-  "onChange"
-> & {
-  value?: TValue[];
-  defaultValue?: TValue[];
-  onChange?: (value: TValue[]) => void;
-};
+type TCheckboxGroupProps<TValue = TCheckboxValue> = Omit<ComponentProps<'div'>, 'onChange'> & {
+  value?: TValue[]
+  defaultValue?: TValue[]
+  onChange?: (value: TValue[]) => void
+}
 
 function CheckboxGroup<TValue = TCheckboxValue>({
   className,
@@ -76,51 +69,43 @@ function CheckboxGroup<TValue = TCheckboxValue>({
   if (value !== undefined && value !== null && !Array.isArray(value)) {
     throw new Error(
       `CheckboxGroup: \`value\` prop must be an array when provided.\nReceived: ${value}`
-    );
+    )
   }
 
   return (
-    <CheckboxGroupProvider
-      value={value}
-      defaultValue={defaultValue}
-      onChange={onChange}
-    >
-      <div
-        data-slot="checkbox-group"
-        className={cn("grid gap-3", className)}
-        {...props}
-      />
+    <CheckboxGroupProvider value={value} defaultValue={defaultValue} onChange={onChange}>
+      <div data-slot="checkbox-group" className={cn('grid gap-3', className)} {...props} />
     </CheckboxGroupProvider>
-  );
+  )
 }
 
 function CheckboxSlot({
   value: checkboxValue,
   ...props
 }: ComponentProps<typeof Slot> & ComponentProps<typeof Checkbox>) {
-  const { selectedValues, setSelectedValues } = useCheckboxGroupContext();
+  const { selectedValues, setSelectedValues } = useCheckboxGroupContext()
 
   const handleCheckedChange = useCallback(
     (checked: CheckedState) => {
       setSelectedValues((prev) => {
-        const newValuesSet = new Set(prev);
+        const newValuesSet = new Set(prev)
 
         if (checked) {
-          newValuesSet.add(checkboxValue);
+          newValuesSet.add(checkboxValue)
         } else {
-          newValuesSet.delete(checkboxValue);
+          newValuesSet.delete(checkboxValue)
         }
 
-        return Array.from(newValuesSet) as TCheckboxValue[];
-      });
+        return Array.from(newValuesSet) as TCheckboxValue[]
+      })
     },
     [checkboxValue, setSelectedValues]
-  );
+  )
 
   const checked = useMemo(() => {
-    const valuesSet = new Set(selectedValues);
-    return valuesSet.has(checkboxValue as TCheckboxValue);
-  }, [checkboxValue, selectedValues]);
+    const valuesSet = new Set(selectedValues)
+    return valuesSet.has(checkboxValue as TCheckboxValue)
+  }, [checkboxValue, selectedValues])
 
   return (
     <Slot
@@ -129,7 +114,7 @@ function CheckboxSlot({
       onCheckedChange={handleCheckedChange}
       {...props}
     />
-  );
+  )
 }
 
 function CheckboxGroupItem(props: ComponentProps<typeof Checkbox>) {
@@ -137,7 +122,7 @@ function CheckboxGroupItem(props: ComponentProps<typeof Checkbox>) {
     <CheckboxSlot value={props.value}>
       <Checkbox {...props} />
     </CheckboxSlot>
-  );
+  )
 }
 
-export { CheckboxGroup, CheckboxGroupItem };
+export { CheckboxGroup, CheckboxGroupItem }

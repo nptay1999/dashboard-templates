@@ -1,9 +1,9 @@
 @layer theme, base, components, font, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/preflight.css" layer(base);
-@import "tailwindcss/utilities.css" layer(utilities);
-@import "./font.css" layer(font);
-@import "tw-animate-css";
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './font.css' layer(font);
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 

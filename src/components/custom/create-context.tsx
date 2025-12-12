@@ -3,17 +3,17 @@ import {
   useMemo,
   useContext as useReactContext,
   type Context,
-} from "react";
+} from 'react'
 
 export type TProviderProps<ContextValue = object | null> = ContextValue & {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 function createContext<ContextValue extends object | null>(
   rootComponentName: string,
   defaultValue?: ContextValue
 ) {
-  const Context = createReactContext<ContextValue | undefined>(defaultValue);
+  const Context = createReactContext<ContextValue | undefined>(defaultValue)
 
   function Provider<TContextValue extends ContextValue = ContextValue>({
     children,
@@ -25,34 +25,30 @@ function createContext<ContextValue extends object | null>(
       () => props,
       // eslint-disable-next-line react-hooks/exhaustive-deps
       Object.values(props)
-    ) as TContextValue;
+    ) as TContextValue
 
-    return <Context.Provider value={value}>{children}</Context.Provider>;
+    return <Context.Provider value={value}>{children}</Context.Provider>
   }
 
-  Provider.displayName = `${rootComponentName}Provider`;
+  Provider.displayName = `${rootComponentName}Provider`
 
-  function useContextValue<
-    TContextValue extends ContextValue = ContextValue
-  >() {
+  function useContextValue<TContextValue extends ContextValue = ContextValue>() {
     const context = useReactContext<TContextValue | undefined>(
       Context as Context<TContextValue | undefined>
-    );
+    )
 
     if (context !== undefined) {
-      return context;
+      return context
     }
 
     if (defaultValue !== undefined) {
-      return defaultValue;
+      return defaultValue
     }
 
-    throw new Error(
-      `useContext must be used within \`${rootComponentName}Provider\`.`
-    );
+    throw new Error(`useContext must be used within \`${rootComponentName}Provider\`.`)
   }
 
-  return [Provider, useContextValue] as const;
+  return [Provider, useContextValue] as const
 }
 
-export default createContext;
+export default createContext
